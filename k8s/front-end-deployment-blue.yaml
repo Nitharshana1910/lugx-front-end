@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lugx-front-end-blue
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lugx-front-end-blue
+  template:
+    metadata:
+      labels:
+        app: lugx-front-end-blue
+    spec:
+      containers:
+      - name: lugx-front-end
+        image: 476287788277.dkr.ecr.ap-south-1.amazonaws.com/lugx-front-end:latest
+        ports:
+        - containerPort: 3000
