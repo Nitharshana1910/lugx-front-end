@@ -29,22 +29,48 @@ https://templatemo.com/tm-589-lugx-gaming
   </head>
 
   <script>
-    const sessionId = crypto.randomUUID();
-    const url = window.location.pathname;
+    (function () {
+      const ANALYTICS_ENDPOINT = '/analytics/track';
 
-    function track(eventType) {
-      fetch("http://localhost:3003/track", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ eventType, url, sessionId, timestamp: new Date().toISOString().split('.')[0].replace('T', ' ') })
+
+      const sessionId = (crypto && crypto.randomUUID)
+        ? crypto.randomUUID()
+        : String(Date.now());
+
+
+      const pageUrl = window.location.pathname + window.location.search;
+
+      
+      function send(eventType) {
+        fetch(ANALYTICS_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          
+          body: JSON.stringify({ eventType, url: pageUrl, sessionId })
+        }).catch(() => {  });
+      }
+
+
+      send('page_view');
+
+      
+      document.addEventListener('click', function () {
+        send('click');
       });
-    }
 
-    track("page_view");
 
-    document.addEventListener("click", () => track("click"));
-    document.addEventListener("scroll", () => track("scroll"));
+      let last = 0;
+      window.addEventListener('scroll', function () {
+        const now = performance.now();
+        if (now - last > 500) { 
+          send('scroll');
+          last = now;
+        }
+      });
+    })();
   </script>
+
+
 
 
 <body>
