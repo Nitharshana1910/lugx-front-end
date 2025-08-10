@@ -33,11 +33,15 @@ https://templatemo.com/tm-589-lugx-gaming
       const ANALYTICS_ENDPOINT = 'http://afbf8e5c4133749f3b08d3d79c265d34-1392223474.ap-south-1.elb.amazonaws.com/analytics/track';
 
 
-      const sessionId = (crypto && crypto.randomUUID)
-        ? crypto.randomUUID()
-        : String(Date.now());
+      function getSessionId() {
+      if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      
+      return 'sid-' + Math.random().toString(36).substring(2) + Date.now().toString(36);
+    }
 
-
+      const sessionId = getSessionId();
       const pageUrl = window.location.pathname + window.location.search;
 
       
