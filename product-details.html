@@ -27,22 +27,50 @@ https://templatemo.com/tm-589-lugx-gaming
 -->
   </head>
 
-   <script>
-    const sessionId = crypto.randomUUID();
-    const url = window.location.pathname;
+    <script>
+    (function () {
+      const ANALYTICS_ENDPOINT = '/analytics/track';
 
-    function track(eventType) {
-      fetch("http://localhost:3003/track", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ eventType, url, sessionId, timestamp: new Date().toISOString().split('.')[0].replace('T', ' ') })
-      });
+
+      function getSessionId() {
+      if (window.crypto && crypto.randomUUID) {
+        return crypto.randomUUID();
+      }
+      
+      return 'sid-' + Math.random().toString(36).substring(2) + Date.now().toString(36);
     }
 
-    track("page_view");
+      const sessionId = getSessionId();
+      const pageUrl = window.location.pathname + window.location.search;
 
-    document.addEventListener("click", () => track("click"));
-    document.addEventListener("scroll", () => track("scroll"));
+      
+      function send(eventType) {
+        fetch(ANALYTICS_ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          
+          body: JSON.stringify({ eventType, url: pageUrl, sessionId })
+        }).catch(() => {  });
+      }
+
+
+      send('page_view');
+
+      
+      document.addEventListener('click', function () {
+        send('click');
+      });
+
+
+      let last = 0;
+      window.addEventListener('scroll', function () {
+        const now = performance.now();
+        if (now - last > 500) { 
+          send('scroll');
+          last = now;
+        }
+      });
+    })();
   </script>
   
 <body>
