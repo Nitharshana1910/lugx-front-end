@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: lugx-front-end
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: lugx-front-end
@@ -15,5 +15,6 @@ spec:
       containers:
       - name: lugx-front-end
         image: 476287788277.dkr.ecr.ap-south-1.amazonaws.com/lugx-front-end:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
