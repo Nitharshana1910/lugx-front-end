@@ -14,6 +14,7 @@ spec:
     spec:
       containers:
       - name: lugx-front-end
+        imagePullPolicy: Always
         image: 476287788277.dkr.ecr.ap-south-1.amazonaws.com/lugx-front-end:latest
         ports:
         - containerPort: 3000
